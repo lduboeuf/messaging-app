@@ -93,6 +93,21 @@ ListItemWithActions{
 
     }
 
+    Button {
+        text: "Redownload"
+        function logList(pref, obj) {
+            for (var p in obj) {
+                console.log(pref+"."+p+":" , obj[p])
+            }
+        }
+        onClicked: function() {
+            //TODO:jezek - add tests, documentation, changelog, etc...
+            //TODO:jezek - figure out animations, etc...
+            console.log("jezek - Redownload clicked")
+            var properties = {'accountId': messageData.accountId, 'messageId': messageData.eventId}
+            chatManager.redownloadMessage(properties)
+        }
+    }
 
 
     leftSideAction: Action {

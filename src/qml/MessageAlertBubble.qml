@@ -19,6 +19,7 @@
 import QtQuick 2.9
 import Ubuntu.Components 1.3
 import Ubuntu.Contacts 0.1
+import Ubuntu.History 0.1
 import QtGraphicalEffects 1.0
 
 ListItemWithActions{
@@ -64,7 +65,8 @@ ListItemWithActions{
 
     Label {
         id: errorTxt
-        text: i18n.tr("Oops, there has been an error with the MMS system and this message could not be retrieved. Please ensure Cellular Data is ON and MMS settings are correct, then ask the sender to try again.")
+        text: i18n.tr("Oops, there has been an error with the MMS system and this message could not be retrieved. Please ensure Cellular Data is ON and MMS settings are correct, then ask the sender to try again.")+
+              "messageData.textMessageStatus: "+messageData.textMessageStatus
         fontSize: "medium"
         anchors {
             left: rectangle.right
@@ -94,6 +96,7 @@ ListItemWithActions{
 
     Button {
         text: "Redownload"
+        enabled: messageData.textMessageStatus == HistoryEventModel.MessageStatusUnknown
         function logList(pref, obj) {
             for (var p in obj) {
                 console.log(pref+"."+p+":" , obj[p])
@@ -103,8 +106,8 @@ ListItemWithActions{
             //TODO:jezek - add tests, documentation, changelog, etc...
             //TODO:jezek - figure out animations, etc...
             console.log("jezek - Redownload clicked")
-            var properties = {'accountId': messageData.accountId, 'messageId': messageData.eventId}
-            chatManager.redownloadMessage(properties)
+            logList("message", {'accountId': messageData.accountId, 'threadId': messageData.threadId, 'eventId': messageData.eventId})
+            chatManager.redownloadMessage(messageData.accountId, messageData.threadId, messageData.eventId)
         }
     }
 

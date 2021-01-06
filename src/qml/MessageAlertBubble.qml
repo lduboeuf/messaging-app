@@ -28,7 +28,12 @@ ListItemWithActions{
     property var messageData: null
     property var account: null //not used but needed to avoid error in logs
 
-    height: errorTxt.height + textTimestamp.height + units.gu(2)
+    readonly property bool unknown: (messageData.textMessageStatus === HistoryThreadModel.MessageStatusUnknown)
+    readonly property bool pending: (messageData.textMessageStatus === HistoryThreadModel.MessageStatusPending)
+    readonly property bool temporaryError: (messageData.textMessageStatus === HistoryThreadModel.MessageStatusTemporarilyFailed)
+    readonly property bool permanentError: (messageData.textMessageStatus === HistoryThreadModel.MessageStatusPermanentlyFailed)
+
+    height: errorTxt.height + redownloadButton.height + textTimestamp.height + units.gu(2)
     anchors {
         topMargin: units.gu(0.5)
         bottomMargin: units.gu(0.5)
@@ -58,7 +63,7 @@ ListItemWithActions{
             left: image.right
             leftMargin: units.gu(1)
         }
-        height: errorTxt.height
+        height: errorTxt.height + redownloadButton.height + units.gu(1)
         width: units.gu(0.5)
         color: "red"
     }
@@ -95,8 +100,13 @@ ListItemWithActions{
     }
 
     Button {
+        id: redownloadButton
         text: "Redownload"
-        enabled: messageData.textMessageStatus == HistoryEventModel.MessageStatusUnknown
+        visible: !unknown && !permanentError
+        enabled: temporaryError
+        anchors.top: errorTxt.bottom
+        anchors.topMargin: units.gu(1)
+        anchors.left: errorTxt.left
         function logList(pref, obj) {
             for (var p in obj) {
                 console.log(pref+"."+p+":" , obj[p])
@@ -106,7 +116,6 @@ ListItemWithActions{
             //TODO:jezek - add tests, documentation, changelog, etc...
             //TODO:jezek - figure out animations, etc...
             console.log("jezek - Redownload clicked")
-            logList("message", {'accountId': messageData.accountId, 'threadId': messageData.threadId, 'eventId': messageData.eventId})
             chatManager.redownloadMessage(messageData.accountId, messageData.threadId, messageData.eventId)
         }
     }

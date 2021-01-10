@@ -71,8 +71,11 @@ ListItemWithActions{
 
     Label {
         id: errorTxt
-        text: i18n.tr("Oops, there has been an error with the MMS system and this message could not be retrieved. Please ensure Cellular Data is ON and MMS settings are correct, then ask the sender to try again.")+
-              "messageData.textMessageStatus: "+messageData.textMessageStatus
+        text: redownloadButton.visible?
+                i18n.tr("Oops, there has been an error with the MMS system and this message could not be retrieved. Please ensure Cellular Data is ON and MMS settings are correct, then tap the redownload button to try to retrieve the message again.")
+              :
+                i18n.tr("Oops, there has been an error with the MMS system and this message could not be retrieved. Please ensure Cellular Data is ON and MMS settings are correct, then ask the sender to try again.")
+
         fontSize: "medium"
         anchors {
             left: rectangle.right
@@ -102,22 +105,33 @@ ListItemWithActions{
 
     Button {
         id: redownloadButton
-        text: "Redownload"
+        text: i18n.tr("Redownload")
         visible: !unknown && !permanentError
         enabled: temporaryError
-        anchors.top: errorTxt.bottom
-        anchors.topMargin: units.gu(1)
-        anchors.left: errorTxt.left
-        function logList(pref, obj) {
-            for (var p in obj) {
-                console.log(pref+"."+p+":" , obj[p])
-            }
+
+        anchors {
+            top: errorTxt.bottom
+            topMargin: units.gu(1)
+            left: errorTxt.left
         }
+
         onClicked: function() {
             //TODO:jezek - add tests, documentation, changelog, etc...
-            //TODO:jezek - figure out animations, etc...
             console.log("jezek - Redownload clicked")
+            // Since the message always changes status to pending in redownloadMessage call and
+            // in the onPendingChanged connection the redownloadButton.enabled is reset to default,
+            // we can set the button disabled here for better responsiveness.
+            redownloadButton.enabled = false
             chatManager.redownloadMessage(messageData.accountId, messageData.threadId, messageData.eventId)
+        }
+
+        // Just for button responsiveness.
+        Connections {
+            target: root
+            onPendingChanged: {
+                // Set redownload button enabled property to default, cause it might be changed by the button's onClicked method.
+                redownloadButton.enabled = temporaryError
+            }
         }
     }
 

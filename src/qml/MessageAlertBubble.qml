@@ -46,8 +46,7 @@ ListItemWithActions{
         sourceSize.height: units.gu(4)
         anchors {
             left: parent.left
-            top: parent.top
-            bottom: parent.bottom
+            verticalCenter: rectangle.verticalCenter
         }
     }
 

@@ -22,4 +22,6 @@ import Qt.labs.folderlistmodel 2.1
 FolderListModel {
     folder: dataLocation + "/stickers/"
     showFiles: false
+    sortField: FolderListModel.Time
+    sortReversed: true
 }

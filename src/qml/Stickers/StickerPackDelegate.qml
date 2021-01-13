@@ -26,20 +26,25 @@ AbstractButton {
     property bool selected
 
     Rectangle {
-        anchors.fill: parent
-        color: selected ? "#f5f5f5" : "transparent"
+        height: units.gu(0.2)
+        width: parent.width
+        anchors.bottom: parent.bottom
+        color: selected ? theme.palette.normal.selectionText  : "transparent"
     }
 
     Icon {
         anchors.fill: parent
+        anchors.margins: units.gu(0.5)
         visible: stickers.count === 0
-        name: "cancel"
+        name: "stock_image"
     }
 
     Image {
         visible: stickers.count > 0
         anchors.fill: parent
         anchors.margins: units.gu(0.5)
+        sourceSize.height: parent.height
+        sourceSize.width: parent.width
         fillMode: Image.PreserveAspectFit
         smooth: true
         source: visible ? stickers.get(0, "filePath") : ""
@@ -50,4 +55,5 @@ AbstractButton {
         showDirs: false
         nameFilters: ["*.png", "*.webm", "*.gif"]
     }
+
 }

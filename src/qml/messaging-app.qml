@@ -290,13 +290,13 @@ MainView {
         property string userTheme: "default"
     }
 
-    StickerPacksModel {
-        id: stickerPacksModel
-    }
+//    StickerPacksModel {
+//        id: stickerPacksModel
+//    }
 
-    StickersModel {
-        id: stickersModel
-    }
+//    StickersModel {
+//        id: stickersModel
+//    }
 
     Connections {
         target: ContentHub

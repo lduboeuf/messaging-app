@@ -279,23 +279,23 @@ Flickable {
             }
         }
 
-        TransparentButton {
-            id: stickersButton
-            objectName: "stickersButton"
-            iconSource: (stickersPicker.expanded && oskEnabled) ? Qt.resolvedUrl("./assets/input-keyboard-symbolic.svg") :
-                                                                  Qt.resolvedUrl("./assets/face-smile-big-symbolic-2.svg")
-            visible: stickerPacksModel.count > 0
-            onClicked: {
-                if (!stickersPicker.expanded) {
-                    messageTextArea.focus = false
-                    stickersPicker.expanded = true
-                    attachmentPanel.expanded = false
-                } else {
-                    stickersPicker.expanded = false
-                    messageTextArea.forceActiveFocus()
-                }
-            }
-        }
+//        TransparentButton {
+//            id: stickersButton
+//            objectName: "stickersButton"
+//            iconSource: (stickersPicker.expanded && oskEnabled) ? Qt.resolvedUrl("./assets/input-keyboard-symbolic.svg") :
+//                                                                  Qt.resolvedUrl("./assets/face-smile-big-symbolic-2.svg")
+//            visible: stickerPacksModel.count > 0
+//            onClicked: {
+//                if (!stickersPicker.expanded) {
+//                    messageTextArea.focus = false
+//                    stickersPicker.expanded = true
+//                    attachmentPanel.expanded = false
+//                } else {
+//                    stickersPicker.expanded = false
+//                    messageTextArea.forceActiveFocus()
+//                }
+//            }
+//        }
     }
 
     AudioPlaybackBar {
@@ -675,6 +675,7 @@ Flickable {
             left: parent.left
             right: parent.right
             top: textEntry.bottom
+            margins: units.gu(0.5)
         }
         onExpandedChanged: {
             if (expanded) {
@@ -710,7 +711,7 @@ Flickable {
                 attachment["filePath"] = filePath
 
                 // we need to append the attachment to a ListModel, so create it dynamically
-                var attachments = Qt.createQmlObject("import QtQuick 2.0; ListModel { }", composeBar)
+                //var attachments = Qt.createQmlObject("import QtQuick 2.0; ListModel { }", composeBar)
                 attachments.append(attachment)
                 composeBar.sendRequested("", attachmentsToModel())
                 stickersPicker.expanded = false

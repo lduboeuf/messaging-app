@@ -18,10 +18,14 @@
 
 import QtQuick 2.3
 import Ubuntu.Components 1.3
+import Ubuntu.Components.Popups 1.3
 import messagingapp.private 0.1
+
+import ".." //ContentImport
 
 FocusScope {
     id: pickerRoot
+
     signal stickerSelected(string path)
 
     Component.onCompleted: {
@@ -31,6 +35,7 @@ FocusScope {
 
     property bool expanded: false
     readonly property int packCount: stickerPacksModel.count
+    property string currrentStickerPackPath: ""
 
     // FIXME: try to get something similar to the keyboard height
     // FIXME: animate the displaying
@@ -38,10 +43,15 @@ FocusScope {
     opacity: expanded ? 1 : 0
     visible: opacity > 0
 
+    Rectangle {
+        anchors.fill: parent
+        color: theme.palette.normal.foreground
+    }
+
     Connections {
         target: Qt.inputMethod
         onVisibleChanged: {
-            if (Qt.inputMethod.visible && oskEnabled) {
+            if (Qt.inputMethod.visible) {
                 pickerRoot.expanded = false
             }
         }
@@ -53,6 +63,94 @@ FocusScope {
 
     Behavior on opacity {
         UbuntuNumberAnimation { }
+    }
+
+    ContentImport {
+        id: contentImporter
+
+        onContentReceived: {
+            var attachment = {}
+            var filePath = String(contentUrl).replace('file://', '')
+            var fileName = filePath.split('/').reverse()[0]
+            var destFile =  "%1/%2".arg(currrentStickerPackPath.replace('file://', '')).arg(fileName)
+            FileOperations.copyFile(filePath, destFile);
+        }
+    }
+
+    Component {
+        id: stickerPopover
+
+        Popover {
+            id: popover
+            property string toRemove: ""
+
+            function show() {
+                visible = true;
+                __foreground.show();
+            }
+
+            Column {
+                id: containerLayout
+                anchors {
+                    left: parent.left
+                    top: parent.top
+                    right: parent.right
+                }
+
+                ListItem {
+                    ListItemLayout {
+                        id: layout
+                        title.text: i18n.tr("Remove")
+                    }
+                    onClicked: {
+                        FileOperations.remove(popover.toRemove.replace('file://', ''))
+                        PopupUtils.close(popover)
+                    }
+                }
+
+            }
+        }
+    }
+
+    Component {
+        id: confirmDeleteComponent
+        Dialog {
+            id: dialog
+            property string toRemove: ""
+
+            title: i18n.tr("Stickers")
+            text: i18n.tr("Please confirm that you want to delete this sticker pack")
+
+            Row {
+                id: row
+                width: parent.width
+                spacing: units.gu(1)
+                Button {
+                    width: parent.width/2 - row.spacing/2
+                    text: "Cancel"
+                    onClicked: PopupUtils.close(dialog)
+                }
+                Button {
+                    width: parent.width/2 - row.spacing/2
+                    text: "Confirm"
+                    color: UbuntuColors.green
+                    onClicked: {
+                        FileOperations.removeDir(dialog.toRemove.replace('file://', ''))
+                        stickersGrid.model.packName = ""
+                        PopupUtils.close(dialog)
+                    }
+                }
+            }
+        }
+    }
+
+
+    StickerPacksModel {
+        id: stickerPacksModel
+    }
+
+    StickersModel {
+        id: stickersModel
     }
 
     ListView {
@@ -72,20 +170,36 @@ FocusScope {
             selected: stickersGrid.model.packName === ""
         }
         delegate: StickerPackDelegate {
-            anchors.top: parent.top
-            anchors.bottom: parent.bottom
-            width: units.gu(6)
+            height: units.gu(6)
+            width: height
 
             path: filePath
-            onTriggered: stickersGrid.model.packName = fileName
+            onClicked: stickersGrid.model.packName = fileName
             selected: stickersGrid.model.packName === fileName
         }
     }
 
-    Rectangle {
-        anchors.fill: stickersGrid
-        color: "#f5f5f5"
+
+    StickerPackAdd {
+        anchors.bottom: setsList.bottom
+        anchors.right: setsList.right
+        height: units.gu(6)
+        width: height
+
+        onTriggered:  {
+            var packName = Math.random().toString(36).substr(2, 5)
+            var newFolder = stickerPacksModel.folder + packName
+            //backend need filepath without "file://" if any
+            newFolder = String(newFolder).replace('file://', '')
+            FileOperations.create(newFolder)
+            stickersGrid.model.packName = packName
+        }
     }
+
+//    Rectangle {
+//        anchors.fill: stickersGrid
+//        color: theme.palette.normal.foreground
+//    }
 
     GridView {
         id: stickersGrid
@@ -99,14 +213,49 @@ FocusScope {
         visible: stickersGrid.model.packName.length > 0
 
         model: stickersModel
+
         delegate: StickerDelegate {
+            id:sticker
             stickerSource: filePath
             width: stickersGrid.cellWidth
             height: stickersGrid.cellHeight
 
-            onTriggered: {
+            onClicked: {
                 StickersHistoryModel.add("%1/%2".arg(stickersGrid.model.packName).arg(fileName))
                 pickerRoot.stickerSelected(stickerSource)
+            }
+
+            onPressAndHold: {
+                currrentStickerPackPath = stickerSource
+                PopupUtils.open(stickerPopover, sticker, { 'toRemove': stickerSource })
+            }
+
+        }
+    }
+
+    Row {
+        anchors.bottom: stickersGrid.bottom
+        anchors.right: stickersGrid.right
+        visible: stickersGrid.model.packName.length > 0
+        StickerDelegate {
+            stickerSource: "image://theme/import"
+            height: units.gu(6)
+            width: height
+            anchors.margins: units.gu(1.5)
+
+            onTriggered: {
+                currrentStickerPackPath = "%1/%2".arg(stickerPacksModel.folder).arg(stickersGrid.model.packName)
+                contentImporter.requestPicture()
+            }
+        }
+        StickerDelegate {
+            stickerSource: "image://theme/edit-delete"
+            height: units.gu(6)
+            width: height
+            anchors.margins: units.gu(1.5)
+
+            onTriggered: {
+                PopupUtils.open(confirmDeleteComponent, null, { 'toRemove':   "%1/%2".arg(stickerPacksModel.folder).arg(stickersGrid.model.packName)})
             }
         }
     }

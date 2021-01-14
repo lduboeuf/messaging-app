@@ -39,9 +39,10 @@ FocusScope {
 
     // FIXME: try to get something similar to the keyboard height
     // FIXME: animate the displaying
-    height: expanded ? units.gu(30) : 0
-    opacity: expanded ? 1 : 0
-    visible: opacity > 0
+    //height: expanded ? units.gu(30) : 0
+    height: units.gu(30)
+    //opacity: expanded ? 1 : 0
+    //visible: opacity > 0
 
     Rectangle {
         anchors.fill: parent
@@ -119,7 +120,7 @@ FocusScope {
             property string toRemove: ""
 
             title: i18n.tr("Stickers")
-            text: i18n.tr("Please confirm that you want to delete this sticker pack")
+            text: i18n.tr("Please confirm that you want to delete all stickers in this pack")
 
             Row {
                 id: row
@@ -180,13 +181,20 @@ FocusScope {
     }
 
 
-    StickerPackAdd {
+    AbstractButton {
         anchors.bottom: setsList.bottom
         anchors.right: setsList.right
         height: units.gu(6)
         width: height
 
+        Icon {
+            name: "add"
+            anchors.fill: parent
+            anchors.margins: units.gu(1.5)
+        }
+
         onTriggered:  {
+            //create a random packName
             var packName = Math.random().toString(36).substr(2, 5)
             var newFolder = stickerPacksModel.folder + packName
             //backend need filepath without "file://" if any
@@ -195,11 +203,6 @@ FocusScope {
             stickersGrid.model.packName = packName
         }
     }
-
-//    Rectangle {
-//        anchors.fill: stickersGrid
-//        color: theme.palette.normal.foreground
-//    }
 
     GridView {
         id: stickersGrid

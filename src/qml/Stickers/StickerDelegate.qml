@@ -21,10 +21,14 @@ import Ubuntu.Components 1.3
 
 AbstractButton {
     property alias stickerSource: image.source
+    width: units.gu(10)
+    height: units.gu(10)
 
     Image {
         id: image
         anchors.fill: parent
+        sourceSize.width: parent.width
+        sourceSize.height: parent.height
         anchors.margins: units.gu(0.5)
         fillMode: Image.PreserveAspectFit
         smooth: true

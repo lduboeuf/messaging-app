@@ -668,8 +668,9 @@ Flickable {
     Loader {
         id: stickersPicker
         property bool expanded: false
-        height: expanded ? item.height : 0
-        active: false
+        height: expanded ? units.gu(30) : 0
+        active: false // we could do a binding here between active and expanded, but turning active to "false" can be a very heavy operation ( freezing the UI)
+        visible: expanded
         sourceComponent: stickersPickerComponent
         anchors {
             left: parent.left
@@ -680,9 +681,6 @@ Flickable {
         onExpandedChanged: {
             if (expanded) {
                stickersPicker.active = expanded
-            }
-            if (active) {
-                item.expanded = expanded
             }
         }
     }

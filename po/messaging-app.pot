@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-13 16:44+0000\n"
+"POT-Creation-Date: 2021-01-14 16:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -172,13 +172,17 @@ msgstr[1] ""
 msgid "Audio attachment not supported"
 msgstr ""
 
+#: ../src/qml/SettingsPage.qml:88
+msgid "AutoPlay animated image"
+msgstr ""
+
 #: ../src/qml/Messages.qml:1271
 msgid "Away"
 msgstr ""
 
 #: ../src/qml/Messages.qml:700 ../src/qml/NewRecipientPage.qml:97
-#: ../src/qml/NewRecipientPage.qml:306 ../src/qml/SettingsPage.qml:109
-#: ../src/qml/SettingsPage.qml:263
+#: ../src/qml/NewRecipientPage.qml:306 ../src/qml/SettingsPage.qml:117
+#: ../src/qml/SettingsPage.qml:271
 msgid "Back"
 msgstr ""
 
@@ -252,11 +256,11 @@ msgstr ""
 msgid "Creating Group..."
 msgstr ""
 
-#: ../src/qml/SettingsPage.qml:50
+#: ../src/qml/SettingsPage.qml:51
 msgid "Dark"
 msgstr ""
 
-#: ../src/qml/MessageAlertBubble.qml:101 ../src/qml/MessageDelegate.qml:127
+#: ../src/qml/MessageAlertBubble.qml:100 ../src/qml/MessageDelegate.qml:127
 #: ../src/qml/NewGroupPage.qml:309
 #: ../src/qml/RegularMessageDelegate_irc.qml:151
 #: ../src/qml/ThreadDelegate.qml:175
@@ -291,7 +295,7 @@ msgstr ""
 msgid "Enable"
 msgstr ""
 
-#: ../src/qml/SettingsPage.qml:56
+#: ../src/qml/SettingsPage.qml:57
 msgid "Enable MMS messages"
 msgstr ""
 
@@ -430,7 +434,7 @@ msgstr ""
 msgid "Leave group"
 msgstr ""
 
-#: ../src/qml/SettingsPage.qml:49
+#: ../src/qml/SettingsPage.qml:50
 msgid "Light"
 msgstr ""
 
@@ -539,7 +543,7 @@ msgstr ""
 msgid "Online"
 msgstr ""
 
-#: ../src/qml/MessageAlertBubble.qml:68 ../src/qml/ThreadDelegate.qml:37
+#: ../src/qml/MessageAlertBubble.qml:67 ../src/qml/ThreadDelegate.qml:37
 msgid ""
 "Oops, there has been an error with the MMS system and this message could not "
 "be retrieved. Please ensure Cellular Data is ON and MMS settings are "
@@ -559,8 +563,8 @@ msgstr ""
 msgid "Pick an account to create."
 msgstr ""
 
-#: ../src/qml/Stickers/StickersPicker.qml:122
-msgid "Please confirm that you want to delete this sticker pack"
+#: ../src/qml/Stickers/StickersPicker.qml:123
+msgid "Please confirm that you want to delete all stickers in this pack"
 msgstr ""
 
 #: ../src/qml/Dialogs/NoMicrophonePermission.qml:37
@@ -591,7 +595,7 @@ msgstr ""
 #: ../src/qml/ComposeBar.qml:203
 #: ../src/qml/Dialogs/EmptyGroupWarningDialog.qml:48
 #: ../src/qml/GroupChatInfoPage.qml:432 ../src/qml/GroupChatInfoPage.qml:436
-#: ../src/qml/Stickers/StickersPicker.qml:103
+#: ../src/qml/Stickers/StickersPicker.qml:104
 msgid "Remove"
 msgstr ""
 
@@ -672,19 +676,19 @@ msgstr ""
 msgid "Share"
 msgstr ""
 
-#: ../src/qml/SettingsPage.qml:63
+#: ../src/qml/SettingsPage.qml:64
 msgid "Simplified conversation view"
 msgstr ""
 
-#: ../src/qml/SettingsPage.qml:43
+#: ../src/qml/SettingsPage.qml:44
 msgid "Sort by timestamp"
 msgstr ""
 
-#: ../src/qml/SettingsPage.qml:44
+#: ../src/qml/SettingsPage.qml:45
 msgid "Sort by title"
 msgstr ""
 
-#: ../src/qml/SettingsPage.qml:70
+#: ../src/qml/SettingsPage.qml:71
 msgid "Sort threads"
 msgstr ""
 
@@ -693,7 +697,7 @@ msgid "Status"
 msgstr ""
 
 #: ../src/qml/AttachmentPanel.qml:105
-#: ../src/qml/Stickers/StickersPicker.qml:121
+#: ../src/qml/Stickers/StickersPicker.qml:122
 msgid "Stickers"
 msgstr ""
 
@@ -713,7 +717,7 @@ msgstr ""
 msgid "Swipe to reveal actions"
 msgstr ""
 
-#: ../src/qml/SettingsPage.qml:48
+#: ../src/qml/SettingsPage.qml:49
 msgid "System Theme"
 msgstr ""
 
@@ -743,7 +747,7 @@ msgstr ""
 msgid "The selected account is not available at the moment"
 msgstr ""
 
-#: ../src/qml/SettingsPage.qml:78
+#: ../src/qml/SettingsPage.qml:79
 msgid "Theme"
 msgstr ""
 

@@ -24,6 +24,8 @@ AbstractButton {
     property alias path: stickers.folder
     property string name
     property bool selected
+    height: units.gu(6)
+    width: height
 
     Rectangle {
         height: units.gu(0.2)

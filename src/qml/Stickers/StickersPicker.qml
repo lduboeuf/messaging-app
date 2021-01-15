@@ -281,7 +281,7 @@ FocusScope {
             width: stickersGrid.cellWidth
             height: stickersGrid.cellHeight
 
-            onTriggered: {
+            onClicked: {
                 StickersHistoryModel.add(sticker)
                 pickerRoot.stickerSelected(stickerSource)
             }

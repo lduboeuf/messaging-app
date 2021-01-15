@@ -271,6 +271,7 @@ Flickable {
             id: attachButton
             objectName: "attachButton"
             iconName: attachmentPanel.expanded ? "close" : "attachment"
+            enabled: !stickersPicker.expanded
             onClicked: {
                 attachmentPanel.expanded = !attachmentPanel.expanded
                 if (attachmentPanel.expanded) {
@@ -279,23 +280,23 @@ Flickable {
             }
         }
 
-//        TransparentButton {
-//            id: stickersButton
-//            objectName: "stickersButton"
-//            iconSource: (stickersPicker.expanded && oskEnabled) ? Qt.resolvedUrl("./assets/input-keyboard-symbolic.svg") :
-//                                                                  Qt.resolvedUrl("./assets/face-smile-big-symbolic-2.svg")
-//            visible: stickerPacksModel.count > 0
-//            onClicked: {
-//                if (!stickersPicker.expanded) {
-//                    messageTextArea.focus = false
-//                    stickersPicker.expanded = true
-//                    attachmentPanel.expanded = false
-//                } else {
-//                    stickersPicker.expanded = false
-//                    messageTextArea.forceActiveFocus()
-//                }
-//            }
-//        }
+        TransparentButton {
+            id: stickersButton
+            objectName: "stickersButton"
+            iconSource: (stickersPicker.expanded && oskEnabled) ? Qt.resolvedUrl("./assets/input-keyboard-symbolic.svg") :
+                                                                  Qt.resolvedUrl("./assets/face-smile-big-symbolic-2.svg")
+            onClicked: {
+                if (!stickersPicker.expanded) {
+                    attachmentPanel.expanded = false
+                    stickersPicker.expanded = true
+                    messageTextArea.focus = false
+                } else {
+                    messageTextArea.forceActiveFocus()
+                    stickersPicker.expanded = false
+
+                }
+            }
+        }
     }
 
     AudioPlaybackBar {
@@ -668,7 +669,8 @@ Flickable {
     Loader {
         id: stickersPicker
         property bool expanded: false
-        height: expanded ? units.gu(30) : 0
+        property real maxHeight: units.gu(30)
+        height: active ? maxHeight - keyboard.height : 0 // for smooth transition, bind height with the keyboard height
         active: false // we could do a binding here between active and expanded, but turning active to "false" can be a very heavy operation ( freezing the UI)
         visible: expanded
         sourceComponent: stickersPickerComponent
@@ -680,6 +682,7 @@ Flickable {
         }
         onExpandedChanged: {
             if (expanded) {
+               if (keyboard.height > 0) maxHeight = keyboard.height
                stickersPicker.active = expanded
             }
         }
@@ -713,6 +716,7 @@ Flickable {
                 attachments.append(attachment)
                 composeBar.sendRequested("", attachmentsToModel())
                 stickersPicker.expanded = false
+                messageTextArea.forceActiveFocus()
             }
         }
     }

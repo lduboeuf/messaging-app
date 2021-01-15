@@ -48,6 +48,7 @@ AbstractButton {
         sourceSize.height: parent.height
         sourceSize.width: parent.width
         fillMode: Image.PreserveAspectFit
+        asynchronous: true
         smooth: true
         source: visible ? stickers.get(0, "filePath") : ""
     }

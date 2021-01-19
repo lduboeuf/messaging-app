@@ -257,6 +257,11 @@ void StickersHistoryModel::updateExistingEntryInDatabase(const HistoryEntry& ent
     }
 }
 
+void StickersHistoryModel::remove(const QString& sticker)
+{
+    removeEntryFromDatabase(sticker);
+}
+
 void StickersHistoryModel::removeEntryFromDatabase(const QString& sticker)
 {
     QMutexLocker ml(&m_dbMutex);

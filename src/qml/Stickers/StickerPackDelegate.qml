@@ -17,7 +17,7 @@
  */
 
 import QtQuick 2.3
-import Qt.labs.folderlistmodel 2.1
+import Qt.labs.folderlistmodel 2.2
 import Ubuntu.Components 1.3
 
 AbstractButton {
@@ -56,7 +56,8 @@ AbstractButton {
     FolderListModel {
         id: stickers
         showDirs: false
-        nameFilters: ["*.png", "*.webm", "*.gif"]
+        caseSensitive: false
+        nameFilters: ["*.png", "*.webm", "*.gif", "*.jpg"]
     }
 
 }

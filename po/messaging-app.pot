@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-15 15:22+0100\n"
+"POT-Creation-Date: 2021-01-19 09:42+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -563,7 +563,7 @@ msgstr ""
 msgid "Pick an account to create."
 msgstr ""
 
-#: ../src/qml/Stickers/StickersPicker.qml:123
+#: ../src/qml/Stickers/StickersPicker.qml:145
 msgid "Please confirm that you want to delete all stickers in this pack"
 msgstr ""
 
@@ -595,7 +595,7 @@ msgstr ""
 #: ../src/qml/ComposeBar.qml:203
 #: ../src/qml/Dialogs/EmptyGroupWarningDialog.qml:48
 #: ../src/qml/GroupChatInfoPage.qml:432 ../src/qml/GroupChatInfoPage.qml:436
-#: ../src/qml/Stickers/StickersPicker.qml:104
+#: ../src/qml/Stickers/StickersPicker.qml:130
 msgid "Remove"
 msgstr ""
 
@@ -697,7 +697,7 @@ msgid "Status"
 msgstr ""
 
 #: ../src/qml/AttachmentPanel.qml:105
-#: ../src/qml/Stickers/StickersPicker.qml:122
+#: ../src/qml/Stickers/StickersPicker.qml:144
 msgid "Stickers"
 msgstr ""
 
@@ -887,4 +887,8 @@ msgstr ""
 
 #: ../src/qml/AccountSectionDelegate.qml:140
 msgid "You were removed from this group"
+msgstr ""
+
+#: ../src/qml/Stickers/StickersPicker.qml:264
+msgid "no stickers yet"
 msgstr ""

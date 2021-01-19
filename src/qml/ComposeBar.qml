@@ -288,8 +288,8 @@ Flickable {
             onClicked: {
                 if (!stickersPicker.expanded) {
                     attachmentPanel.expanded = false
-                    stickersPicker.expanded = true
                     messageTextArea.focus = false
+                    stickersPicker.expanded = true
                 } else {
                     messageTextArea.forceActiveFocus()
                     stickersPicker.expanded = false
@@ -669,9 +669,13 @@ Flickable {
     Loader {
         id: stickersPicker
         property bool expanded: false
-        property real maxHeight: units.gu(30)
-        height: active ? maxHeight - keyboard.height : 0 // for smooth transition, bind height with the keyboard height
-        active: false // we could do a binding here between active and expanded, but turning active to "false" can be a very heavy operation ( freezing the UI)
+        property int maxHeight: units.gu(30)
+        property int minHeight: 0
+        property bool initialState: false
+
+        height: 0
+
+        active: expanded
         visible: expanded
         sourceComponent: stickersPickerComponent
         anchors {
@@ -680,12 +684,38 @@ Flickable {
             top: textEntry.bottom
             margins: units.gu(0.5)
         }
-        onExpandedChanged: {
-            if (expanded) {
-               if (keyboard.height > 0) maxHeight = keyboard.height
-               stickersPicker.active = expanded
+
+        onInitialStateChanged: {
+            if (initialState) {
+                height = Qt.binding(function() { return expanded ? maxHeight : minHeight})
             }
         }
+
+
+        onExpandedChanged: {
+            // we define here that height must follow keyboard dismissing height, otherwise,
+            // stickerPicker would suddenly resize and make the conversation list jumping up and down
+
+            if (expanded && keyboard.height > 0) {
+                initialState = false
+                maxHeight = keyboard.height
+                height = Qt.binding(function() {
+                    var currentHeight = maxHeight - keyboard.height
+                    if (!expanded && currentHeight <= 0) {
+                        initialState = true
+                        return 0
+                    }else {
+                        return currentHeight
+                    }
+                })
+
+            }
+        }
+
+        Component.onCompleted: {
+            initialState = true
+        }
+
     }
 
     Component {

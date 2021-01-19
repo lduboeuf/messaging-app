@@ -19,6 +19,7 @@
 import QtQuick 2.3
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
+import Qt.labs.folderlistmodel 2.2
 import messagingapp.private 0.1
 
 import ".." //ContentImport
@@ -35,28 +36,55 @@ FocusScope {
 
     property bool expanded: false
     readonly property int packCount: stickerPacksModel.count
-    property string currrentStickerPackPath: ""
+    property string currentStickerPackPath: ""
 
-    // FIXME: try to get something similar to the keyboard height
-    // FIXME: animate the displaying
-    //height: expanded ? units.gu(30) : 0
     height: units.gu(30)
-    //opacity: expanded ? 1 : 0
-    //visible: opacity > 0
+
+    //backend need filepath without "file://" if any
+    function toSystemPath(path) {
+        return path.replace('file://', '')
+    }
+
+    function removePack(packPath) {
+        FileOperations.removeDir(toSystemPath(packPath))
+        //TODO remove from history ( use signal / slots in c++ )
+        stickersModel.packName = ""
+    }
+
+    function removeSticker(path) {
+        var filePath = toSystemPath(path)
+        FileOperations.remove(filePath)
+        StickersHistoryModel.remove(filePath)
+    }
+
+    function importStickerRequested(currentPackPath) {
+        currentStickerPackPath = currentPackPath
+        contentImporter.requestPicture()
+        contentImporter.contentReceived.connect(importSticker)
+    }
+
+    function importSticker(contentUrl) {
+        var attachment = {}
+        var filePath = toSystemPath(String(contentUrl))
+        var fileName = filePath.split('/').reverse()[0]
+        var destFile =  "%1/%2".arg(toSystemPath(currentStickerPackPath)).arg(fileName)
+        FileOperations.copyFile(filePath, destFile);
+    }
+
+
+    StickerPacksModel {
+        id: stickerPacksModel
+    }
+
+    StickersModel {
+        id: stickersModel
+    }
 
     Rectangle {
         anchors.fill: parent
         color: theme.palette.normal.foreground
     }
 
-    Connections {
-        target: Qt.inputMethod
-        onVisibleChanged: {
-            if (Qt.inputMethod.visible) {
-                pickerRoot.expanded = false
-            }
-        }
-    }
 
     Behavior on height {
         UbuntuNumberAnimation { }
@@ -68,14 +96,6 @@ FocusScope {
 
     ContentImport {
         id: contentImporter
-
-        onContentReceived: {
-            var attachment = {}
-            var filePath = String(contentUrl).replace('file://', '')
-            var fileName = filePath.split('/').reverse()[0]
-            var destFile =  "%1/%2".arg(currrentStickerPackPath.replace('file://', '')).arg(fileName)
-            FileOperations.copyFile(filePath, destFile);
-        }
     }
 
     Component {
@@ -84,6 +104,10 @@ FocusScope {
         Popover {
             id: popover
             property string toRemove: ""
+
+            signal accepted()
+
+            onAccepted: PopupUtils.close(popover)
 
             function show() {
                 visible = true;
@@ -103,10 +127,7 @@ FocusScope {
                         id: layout
                         title.text: i18n.tr("Remove")
                     }
-                    onClicked: {
-                        FileOperations.remove(popover.toRemove.replace('file://', ''))
-                        PopupUtils.close(popover)
-                    }
+                    onClicked: accepted()
                 }
 
             }
@@ -117,10 +138,13 @@ FocusScope {
         id: confirmDeleteComponent
         Dialog {
             id: dialog
-            property string toRemove: ""
 
             title: i18n.tr("Stickers")
             text: i18n.tr("Please confirm that you want to delete all stickers in this pack")
+
+            signal accepted()
+
+            onAccepted: PopupUtils.close(dialog)
 
             Row {
                 id: row
@@ -135,24 +159,15 @@ FocusScope {
                     width: parent.width/2 - row.spacing/2
                     text: "Confirm"
                     color: UbuntuColors.green
-                    onClicked: {
-                        FileOperations.removeDir(dialog.toRemove.replace('file://', ''))
-                        stickersGrid.model.packName = ""
-                        PopupUtils.close(dialog)
-                    }
+                    onClicked: accepted()
                 }
             }
         }
     }
 
 
-    StickerPacksModel {
-        id: stickerPacksModel
-    }
 
-    StickersModel {
-        id: stickersModel
-    }
+
 
     ListView {
         id: setsList
@@ -167,17 +182,19 @@ FocusScope {
             height: units.gu(6)
             width: height
 
-            onTriggered: stickersGrid.model.packName = ""
-            selected: stickersGrid.model.packName === ""
+            onTriggered: stickersModel.packName = ""
+            selected: stickersModel.packName === ""
         }
         delegate: StickerPackDelegate {
             height: units.gu(6)
             width: height
 
             path: filePath
-            onClicked: stickersGrid.model.packName = fileName
-            selected: stickersGrid.model.packName === fileName
+            onClicked: stickersModel.packName = fileName
+            selected: stickersModel.packName === fileName
         }
+
+
     }
 
 
@@ -197,10 +214,9 @@ FocusScope {
             //create a random packName
             var packName = Math.random().toString(36).substr(2, 5)
             var newFolder = stickerPacksModel.folder + packName
-            //backend need filepath without "file://" if any
-            newFolder = String(newFolder).replace('file://', '')
+            newFolder = toSystemPath(String(newFolder))
             FileOperations.create(newFolder)
-            stickersGrid.model.packName = packName
+            stickersModel.packName = packName
         }
     }
 
@@ -213,7 +229,7 @@ FocusScope {
         clip: true
         cellWidth: units.gu(10)
         cellHeight: units.gu(10)
-        visible: stickersGrid.model.packName.length > 0
+        visible: stickersModel.packName.length > 0
 
         model: stickersModel
 
@@ -224,44 +240,27 @@ FocusScope {
             height: stickersGrid.cellHeight
 
             onClicked: {
-                StickersHistoryModel.add("%1/%2".arg(stickersGrid.model.packName).arg(fileName))
-                pickerRoot.stickerSelected(stickerSource)
+                StickersHistoryModel.add(filePath)
+                pickerRoot.stickerSelected(filePath)
             }
 
             onPressAndHold: {
-                currrentStickerPackPath = stickerSource
-                PopupUtils.open(stickerPopover, sticker, { 'toRemove': stickerSource })
+                var dialog = PopupUtils.open(stickerPopover, sticker)
+                dialog.accepted.connect(function() {
+                    removeSticker(filePath)
+                })
             }
 
         }
+
     }
 
-    Row {
-        anchors.bottom: stickersGrid.bottom
-        anchors.right: stickersGrid.right
-        visible: stickersGrid.model.packName.length > 0
-        StickerDelegate {
-            stickerSource: "image://theme/import"
-            height: units.gu(6)
-            width: height
-            anchors.margins: units.gu(1.5)
-
-            onTriggered: {
-                currrentStickerPackPath = "%1/%2".arg(stickerPacksModel.folder).arg(stickersGrid.model.packName)
-                contentImporter.requestPicture()
-            }
-        }
-        StickerDelegate {
-            stickerSource: "image://theme/edit-delete"
-            height: units.gu(6)
-            width: height
-            anchors.margins: units.gu(1.5)
-
-            onTriggered: {
-                PopupUtils.open(confirmDeleteComponent, null, { 'toRemove':   "%1/%2".arg(stickerPacksModel.folder).arg(stickersGrid.model.packName)})
-            }
-        }
+    Label {
+        anchors.centerIn: stickersGrid
+        visible: stickersGrid.model.packName.length > 0 && stickersGrid.model.count === 0
+        text: i18n.tr("no stickers yet")
     }
+
 
     GridView {
         id: historyGrid
@@ -272,7 +271,7 @@ FocusScope {
         clip: true
         cellWidth: units.gu(10)
         cellHeight: units.gu(10)
-        visible: stickersGrid.model.packName.length === 0
+        visible: stickersModel.packName.length === 0
 
         model: StickersHistoryModel
 
@@ -287,4 +286,40 @@ FocusScope {
             }
         }
     }
+
+    Row {
+        anchors.bottom: stickersGrid.bottom
+        anchors.right: stickersGrid.right
+        StickerDelegate {
+            stickerSource: "image://theme/import"
+            height: units.gu(6)
+            width: height
+            anchors.margins: units.gu(1.5)
+            visible: stickersModel.packName.length > 0
+            onTriggered: {
+                pickerRoot.importStickerRequested("%1/%2".arg(stickerPacksModel.folder).arg(stickersModel.packName))
+            }
+        }
+        StickerDelegate {
+            stickerSource: "image://theme/edit-delete"
+            height: units.gu(6)
+            width: height
+            anchors.margins: units.gu(1.5)
+
+            onTriggered: {
+                if (stickersModel.packName.length > 0) {
+                    var path =  "%1/%2".arg(stickerPacksModel.folder).arg(stickersModel.packName)
+                    var dialog = PopupUtils.open(confirmDeleteComponent, null)
+                    dialog.accepted.connect(function() {
+                        removePack(path)
+                    })
+                } else {
+                    StickersHistoryModel.clearAll()
+                }
+
+            }
+        }
+    }
+
+
 }

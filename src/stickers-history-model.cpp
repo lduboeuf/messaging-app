@@ -260,6 +260,7 @@ void StickersHistoryModel::updateExistingEntryInDatabase(const HistoryEntry& ent
 void StickersHistoryModel::remove(const QString& sticker)
 {
     removeEntryFromDatabase(sticker);
+    Q_EMIT rowCountChanged();
 }
 
 void StickersHistoryModel::removeEntryFromDatabase(const QString& sticker)

@@ -68,7 +68,6 @@ bool FileOperations::create(const QString &dirPath)
 
     QDir newDir(dirPath);
     if (!newDir.exists()) {
-        qDebug() << "created new sticker dir:" << dirPath;
         return newDir.mkpath(dirPath);
     }
     return false;
@@ -79,7 +78,6 @@ bool FileOperations::removeDir(const QString &dirPath)
 
     QDir dir(dirPath);
     if (dir.exists()) {
-        qDebug() << "removed sticker pack:" << dirPath;
         return dir.removeRecursively();
     }
     return false;
@@ -88,7 +86,6 @@ bool FileOperations::removeDir(const QString &dirPath)
 
 bool FileOperations::copyFile(const QString &from, const QString &to) {
     if(QFile::exists(to)) QFile::remove(to);
-    qDebug() << "copied file from " << from << " to " << to;
     return QFile::copy(from, to);
 }
 

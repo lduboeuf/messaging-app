@@ -19,10 +19,15 @@
 import QtQuick 2.3
 import Ubuntu.Components 1.3
 
+
 AbstractButton {
+    id: root
     property alias stickerSource: image.source
     width: units.gu(10)
     height: units.gu(10)
+    visible: image.status == Image.Ready
+
+    signal notFound()
 
     Image {
         id: image
@@ -32,5 +37,6 @@ AbstractButton {
         anchors.margins: units.gu(0.5)
         fillMode: Image.PreserveAspectFit
         smooth: true
+        onStatusChanged: if (image.status == Image.Error) root.notFound()
     }
 }

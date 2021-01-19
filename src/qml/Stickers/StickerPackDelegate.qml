@@ -37,7 +37,7 @@ AbstractButton {
     Icon {
         anchors.fill: parent
         anchors.margins: units.gu(0.5)
-        visible: stickers.count === 0
+        visible: stickers.status === FolderListModel.Ready && stickers.count === 0
         name: "stock_image"
     }
 

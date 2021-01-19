@@ -19,7 +19,6 @@
 import QtQuick 2.3
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
-import Qt.labs.folderlistmodel 2.2
 import messagingapp.private 0.1
 
 import ".." //ContentImport
@@ -70,6 +69,9 @@ FocusScope {
         var destFile =  "%1/%2".arg(toSystemPath(currentStickerPackPath)).arg(fileName)
         FileOperations.copyFile(filePath, destFile);
     }
+
+    onStickerSelected:  StickersHistoryModel.add(toSystemPath(path))
+
 
 
     StickerPacksModel {
@@ -240,7 +242,7 @@ FocusScope {
             height: stickersGrid.cellHeight
 
             onClicked: {
-                StickersHistoryModel.add(filePath)
+                console.log('filePath:', filePath)
                 pickerRoot.stickerSelected(filePath)
             }
 
@@ -276,12 +278,15 @@ FocusScope {
         model: StickersHistoryModel
 
         delegate: StickerDelegate {
-            stickerSource: "%1/stickers/%2".arg(dataLocation).arg(sticker)
+            stickerSource: sticker
             width: stickersGrid.cellWidth
             height: stickersGrid.cellHeight
 
+            onNotFound: {
+                console.log("not found;", sticker)
+                StickersHistoryModel.remove(sticker)}
+
             onClicked: {
-                StickersHistoryModel.add(sticker)
                 pickerRoot.stickerSelected(stickerSource)
             }
         }

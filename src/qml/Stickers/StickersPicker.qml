@@ -16,7 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import QtQuick 2.3
+import QtQuick 2.9
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
 import messagingapp.private 0.1
@@ -70,9 +70,9 @@ FocusScope {
         FileOperations.copyFile(filePath, destFile);
     }
 
-    onStickerSelected:  StickersHistoryModel.add(toSystemPath(path))
-
-
+    onStickerSelected:  {
+        StickersHistoryModel.add(toSystemPath(path))
+    }
 
     StickerPacksModel {
         id: stickerPacksModel
@@ -236,18 +236,17 @@ FocusScope {
         model: stickersModel
 
         delegate: StickerDelegate {
-            id:sticker
+            id:sticker_delegate
             stickerSource: filePath
             width: stickersGrid.cellWidth
             height: stickersGrid.cellHeight
 
             onClicked: {
-                console.log('filePath:', filePath)
                 pickerRoot.stickerSelected(filePath)
             }
 
             onPressAndHold: {
-                var dialog = PopupUtils.open(stickerPopover, sticker)
+                var dialog = PopupUtils.open(stickerPopover, sticker_delegate)
                 dialog.accepted.connect(function() {
                     removeSticker(filePath)
                 })
@@ -258,6 +257,7 @@ FocusScope {
     }
 
     Label {
+        id: no_stickers_lbl
         anchors.centerIn: stickersGrid
         visible: stickersGrid.model.packName.length > 0 && stickersGrid.model.count === 0
         text: i18n.tr("no stickers yet")
@@ -276,30 +276,47 @@ FocusScope {
         visible: stickersModel.packName.length === 0
 
         model: StickersHistoryModel
-
         delegate: StickerDelegate {
+            id: history_delegate
             stickerSource: sticker
             width: stickersGrid.cellWidth
             height: stickersGrid.cellHeight
 
             onNotFound: {
-                console.log("not found;", sticker)
-                StickersHistoryModel.remove(sticker)}
+                StickersHistoryModel.remove(sticker)
+            }
 
             onClicked: {
-                pickerRoot.stickerSelected(stickerSource)
+                pickerRoot.stickerSelected(sticker)
+            }
+
+            onPressAndHold: {
+                var dialog = PopupUtils.open(stickerPopover, history_delegate)
+                dialog.accepted.connect(function() {
+                    StickersHistoryModel.remove(sticker)
+                })
             }
         }
     }
 
+    Label {
+        anchors.centerIn: historyGrid
+        visible: StickersHistoryModel.count === 0 && stickersGrid.model.packName.length === 0
+        text: i18n.tr("sent stickers will appear here")
+    }
+
     Row {
+        id: stickerActions
+        padding: units.gu(0.5)
+        spacing: units.gu(1)
+        height: units.gu(6)
         anchors.bottom: stickersGrid.bottom
         anchors.right: stickersGrid.right
+
         StickerDelegate {
             stickerSource: "image://theme/import"
             height: units.gu(6)
             width: height
-            anchors.margins: units.gu(1.5)
             visible: stickersModel.packName.length > 0
             onTriggered: {
                 pickerRoot.importStickerRequested("%1/%2".arg(stickerPacksModel.folder).arg(stickersModel.packName))
@@ -309,7 +326,7 @@ FocusScope {
             stickerSource: "image://theme/edit-delete"
             height: units.gu(6)
             width: height
-            anchors.margins: units.gu(1.5)
+            visible: stickersModel.packName.length > 0 || (StickersHistoryModel.count > 0 && stickersGrid.model.packName.length === 0)
 
             onTriggered: {
                 if (stickersModel.packName.length > 0) {
@@ -324,7 +341,24 @@ FocusScope {
 
             }
         }
+
+
     }
 
+    states: [
+        State {
+            name: "noStickers"
+            when: stickersModel.count === 0 && stickersModel.packName.length > 0
+
+            AnchorChanges {
+                target: stickerActions
+                anchors.top: no_stickers_lbl.bottom
+                anchors.bottom: undefined
+                anchors.left: undefined
+                anchors.right: undefined
+                anchors.horizontalCenter: stickersGrid.horizontalCenter
+            }
+        }
+    ]
 
 }

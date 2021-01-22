@@ -29,16 +29,20 @@ FocusScope {
 
     signal stickerSelected(string path)
 
-    Component.onCompleted: {
-        StickersHistoryModel.databasePath = dataLocation + "/stickers/stickers.sqlite"
-        StickersHistoryModel.limit = 10
-    }
-
     property bool expanded: false
     readonly property int packCount: stickerPacksModel.count
     property string currentStickerPackPath: ""
 
     height: units.gu(30)
+
+    Component.onCompleted: {
+        StickersHistoryModel.databasePath = dataLocation + "/stickers/stickers.sqlite"
+        StickersHistoryModel.limit = 10
+    }
+
+    onStickerSelected:  {
+        StickersHistoryModel.add(toSystemPath(path))
+    }
 
     //backend need filepath without "file://" if any
     function toSystemPath(path) {
@@ -65,9 +69,6 @@ FocusScope {
         FileOperations.copyFile(filePath, destFile);
     }
 
-    onStickerSelected:  {
-        StickersHistoryModel.add(toSystemPath(path))
-    }
 
     StickerPacksModel {
         id: stickerPacksModel
@@ -190,6 +191,7 @@ FocusScope {
             }
             selected: stickersModel.packName === packName
         }
+    }
 
     GridView {
         id: stickersGrid

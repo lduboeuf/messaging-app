@@ -271,7 +271,6 @@ Flickable {
             id: attachButton
             objectName: "attachButton"
             iconName: attachmentPanel.expanded ? "close" : "attachment"
-            enabled: !stickersPicker.expanded
             onClicked: {
                 attachmentPanel.expanded = !attachmentPanel.expanded
                 if (attachmentPanel.expanded) {

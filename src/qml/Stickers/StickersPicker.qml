@@ -19,6 +19,7 @@
 import QtQuick 2.9
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
+import Qt.labs.folderlistmodel 2.12
 import messagingapp.private 0.1
 
 import ".." //ContentImport
@@ -44,20 +45,14 @@ FocusScope {
         return path.replace('file://', '')
     }
 
-    function removePack(packPath) {
-        FileOperations.removeDir(toSystemPath(packPath))
-        //TODO remove from history ( use signal / slots in c++ )
-        stickersModel.packName = ""
-    }
-
     function removeSticker(path) {
         var filePath = toSystemPath(path)
         FileOperations.remove(filePath)
         StickersHistoryModel.remove(filePath)
     }
 
-    function importStickerRequested(currentPackPath) {
-        currentStickerPackPath = currentPackPath
+    function importStickerRequested(packName) {
+        currentStickerPackPath = "%1/%2".arg(stickerPacksModel.packPath).arg(packName)
         contentImporter.requestPicture()
         contentImporter.contentReceived.connect(importSticker)
     }
@@ -78,8 +73,12 @@ FocusScope {
         id: stickerPacksModel
     }
 
+
     StickersModel {
         id: stickersModel
+        onCountChanged: {
+            stickerPacksModel.checkForUpdate(setsList.currentIndex, count, stickersModel.packName)
+        }
     }
 
     Rectangle {
@@ -105,10 +104,8 @@ FocusScope {
 
         Popover {
             id: popover
-            property string toRemove: ""
 
             signal accepted()
-
             onAccepted: PopupUtils.close(popover)
 
             function show() {
@@ -167,13 +164,9 @@ FocusScope {
         }
     }
 
-
-
-
-
     ListView {
         id: setsList
-        model: stickerPacksModel
+        model: stickerPacksModel.model
         orientation: ListView.Horizontal
         anchors.left: parent.left
         anchors.right: parent.right
@@ -191,36 +184,12 @@ FocusScope {
             height: units.gu(6)
             width: height
 
-            path: filePath
-            onClicked: stickersModel.packName = fileName
-            selected: stickersModel.packName === fileName
+            onClicked: {
+                setsList.currentIndex = index
+                stickersModel.packName = packName
+            }
+            selected: stickersModel.packName === packName
         }
-
-
-    }
-
-
-    AbstractButton {
-        anchors.bottom: setsList.bottom
-        anchors.right: setsList.right
-        height: units.gu(6)
-        width: height
-
-        Icon {
-            name: "add"
-            anchors.fill: parent
-            anchors.margins: units.gu(1.5)
-        }
-
-        onTriggered:  {
-            //create a random packName
-            var packName = Math.random().toString(36).substr(2, 5)
-            var newFolder = stickerPacksModel.folder + packName
-            newFolder = toSystemPath(String(newFolder))
-            FileOperations.create(newFolder)
-            stickersModel.packName = packName
-        }
-    }
 
     GridView {
         id: stickersGrid
@@ -319,21 +288,21 @@ FocusScope {
             width: height
             visible: stickersModel.packName.length > 0
             onTriggered: {
-                pickerRoot.importStickerRequested("%1/%2".arg(stickerPacksModel.folder).arg(stickersModel.packName))
+                pickerRoot.importStickerRequested(stickersModel.packName)
             }
         }
         StickerDelegate {
             stickerSource: "image://theme/edit-delete"
             height: units.gu(6)
             width: height
-            visible: stickersModel.packName.length > 0 || (StickersHistoryModel.count > 0 && stickersGrid.model.packName.length === 0)
+            visible: (stickersModel.packName.length > 0 && stickerPacksModel.model.count > 1) || (StickersHistoryModel.count > 0 && stickersModel.packName.length === 0)
 
             onTriggered: {
                 if (stickersModel.packName.length > 0) {
-                    var path =  "%1/%2".arg(stickerPacksModel.folder).arg(stickersModel.packName)
                     var dialog = PopupUtils.open(confirmDeleteComponent, null)
                     dialog.accepted.connect(function() {
-                        removePack(path)
+                        stickerPacksModel.removePack(stickersModel.packName)
+                        stickersModel.packName = ""
                     })
                 } else {
                     StickersHistoryModel.clearAll()

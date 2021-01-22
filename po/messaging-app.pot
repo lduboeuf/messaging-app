@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-20 13:55+0000\n"
+"POT-Creation-Date: 2021-01-22 07:44+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -438,7 +438,7 @@ msgstr ""
 msgid "Light"
 msgstr ""
 
-#: ../src/qml/ComposeBar.qml:624 ../src/qml/MessageDelegate.qml:161
+#: ../src/qml/ComposeBar.qml:623 ../src/qml/MessageDelegate.qml:161
 msgid "MMS"
 msgstr ""
 
@@ -563,7 +563,7 @@ msgstr ""
 msgid "Pick an account to create."
 msgstr ""
 
-#: ../src/qml/Stickers/StickersPicker.qml:148
+#: ../src/qml/Stickers/StickersPicker.qml:142
 msgid "Please confirm that you want to delete all stickers in this pack"
 msgstr ""
 
@@ -595,7 +595,7 @@ msgstr ""
 #: ../src/qml/ComposeBar.qml:203
 #: ../src/qml/Dialogs/EmptyGroupWarningDialog.qml:48
 #: ../src/qml/GroupChatInfoPage.qml:432 ../src/qml/GroupChatInfoPage.qml:436
-#: ../src/qml/Stickers/StickersPicker.qml:133
+#: ../src/qml/Stickers/StickersPicker.qml:127
 msgid "Remove"
 msgstr ""
 
@@ -697,7 +697,7 @@ msgid "Status"
 msgstr ""
 
 #: ../src/qml/AttachmentPanel.qml:105
-#: ../src/qml/Stickers/StickersPicker.qml:147
+#: ../src/qml/Stickers/StickersPicker.qml:141
 msgid "Stickers"
 msgstr ""
 
@@ -819,11 +819,11 @@ msgstr ""
 msgid "Welcome to your Ubuntu messaging app."
 msgstr ""
 
-#: ../src/qml/ComposeBar.qml:567
+#: ../src/qml/ComposeBar.qml:566
 msgid "Write a broadcast message..."
 msgstr ""
 
-#: ../src/qml/ComposeBar.qml:579
+#: ../src/qml/ComposeBar.qml:578
 msgid "Write a message..."
 msgstr ""
 
@@ -889,10 +889,10 @@ msgstr ""
 msgid "You were removed from this group"
 msgstr ""
 
-#: ../src/qml/Stickers/StickersPicker.qml:269
+#: ../src/qml/Stickers/StickersPicker.qml:232
 msgid "no stickers yet"
 msgstr ""
 
-#: ../src/qml/Stickers/StickersPicker.qml:316
+#: ../src/qml/Stickers/StickersPicker.qml:274
 msgid "sent stickers will appear here"
 msgstr ""

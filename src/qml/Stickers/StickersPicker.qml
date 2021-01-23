@@ -56,9 +56,11 @@ FocusScope {
     }
 
     function importStickerRequested(packName) {
-        currentStickerPackPath = "%1/%2".arg(stickerPacksModel.packPath).arg(packName)
+        //currentStickerPackPath = "%1/%2".arg(stickerPacksModel.packPath).arg(packName)
         contentImporter.requestPicture()
-        contentImporter.contentReceived.connect(importSticker)
+        contentImporter.contentReceived.connect(function(contentUrl) {
+            stickerPacksModel.addSticker(packName, toSystemPath(String(contentUrl)))
+        })
     }
 
     function importSticker(contentUrl) {
@@ -70,16 +72,25 @@ FocusScope {
     }
 
 
-    StickerPacksModel {
+    StickersPackModel {
         id: stickerPacksModel
+        stickerPath: dataLocation + "/stickers"
+
+        onCountChanged: console.log('sps count', count);
     }
+
+//    StickerPacksModel {
+//        id: stickerPacksModel
+//    }
 
 
     StickersModel {
         id: stickersModel
         onCountChanged: {
-            stickerPacksModel.checkForUpdate(setsList.currentIndex, count, stickersModel.packName)
+            console.log('sp count:', count)
         }
+        onPackNameChanged: console.log('selected pack:', packName)
+        onDataChanged: console.log(JSON.stringify(data))
     }
 
     Rectangle {
@@ -167,7 +178,7 @@ FocusScope {
 
     ListView {
         id: setsList
-        model: stickerPacksModel.model
+        model: stickerPacksModel
         orientation: ListView.Horizontal
         anchors.left: parent.left
         anchors.right: parent.right
@@ -297,7 +308,7 @@ FocusScope {
             stickerSource: "image://theme/edit-delete"
             height: units.gu(6)
             width: height
-            visible: (stickersModel.packName.length > 0 && stickerPacksModel.model.count > 1) || (StickersHistoryModel.count > 0 && stickersModel.packName.length === 0)
+            visible: (stickersModel.packName.length > 0 && stickersModel.count > 0) || (StickersHistoryModel.count > 0 && stickersModel.packName.length === 0)
 
             onTriggered: {
                 if (stickersModel.packName.length > 0) {
@@ -331,5 +342,34 @@ FocusScope {
             }
         }
     ]
+
+
+
+//    ListView {
+//        id: stickerPackView
+//        orientation: ListView.Horizontal
+//        anchors.left: parent.left
+//        //anchors.right: parent.right
+//        anchors.bottom: parent.bottom
+
+//        height: units.gu(30)
+//        model:testouille
+//        delegate: StickerPackDelegate {
+//            height: units.gu(6)
+//            width: height
+
+//            onClicked: {
+//                stickerPackView.currentIndex = index
+//                stickersModel.packName = packName
+//            }
+//            selected: stickersModel.packName === packName
+
+//            Component.onCompleted: {
+//                console.log(thumbnail, count, "name:", packName)
+//            }
+
+//        }
+
+//    }
 
 }

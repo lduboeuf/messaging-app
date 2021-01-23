@@ -59,7 +59,7 @@ Item {
         }
 
         if (!hasEmptyPack) {
-            createPack()
+            //createPack()
         }
     }
 
@@ -109,7 +109,7 @@ Item {
             if (status === FolderListModel.Ready) {
                 // create at least one pack
                 if (count === 0) {
-                    createPack()
+                    //createPack()
                 }
             }
         }

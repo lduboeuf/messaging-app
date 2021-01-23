@@ -62,9 +62,7 @@ AbstractButton {
         source: count> 0 ? "file://" + thumbnail : "image://theme/stock_image"
     }
 
-    Component.onCompleted: {
-        console.log(thumbnail, count)
-    }
+
 
 //    FolderListModel {
 //        id: stickers

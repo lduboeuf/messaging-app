@@ -305,14 +305,12 @@ ListItemWithActions {
     Loader {
         id: statusIconLoader
         active: !incoming && !selectMode
-        Component.onCompleted: {
-            setSource(Qt.resolvedUrl("MessageStatusIcon.qml"),
+        Component.onCompleted: setSource(Qt.resolvedUrl("MessageStatusIcon.qml"),
                                          {"parent": Qt.binding(function(){ return messageDelegate._lastItem }),
                                           "incoming": Qt.binding(function(){ return messageDelegate.incoming }),
                                           "selectMode": Qt.binding(function(){ return messageDelegate.selectMode }),
                                           "textMessageStatus": Qt.binding(function(){ return messageData.textMessageStatus }),
                                           "messageDelegate": messageDelegate,
                                          });
-        }
     }
 }

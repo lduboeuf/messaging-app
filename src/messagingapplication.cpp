@@ -20,7 +20,7 @@
 #include "audiorecorder.h"
 #include "fileoperations.h"
 #include "stickers-history-model.h"
-#include "stickerspackmodel.h"
+#include "stickers-pack-model.h"
 
 #include <libnotify/notify.h>
 

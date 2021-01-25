@@ -292,14 +292,6 @@ MainView {
         property bool autoplayAnimatedImage: true
     }
 
-//    StickerPacksModel {
-//        id: stickerPacksModel
-//    }
-
-//    StickersModel {
-//        id: stickersModel
-//    }
-
     Connections {
         target: ContentHub
         onImportRequested: startImport(transfer)

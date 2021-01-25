@@ -690,7 +690,6 @@ Flickable {
             }
         }
 
-
         onExpandedChanged: {
             // we define here that height must follow keyboard dismissing height, otherwise,
             // stickerPicker would suddenly resize and make the conversation list jumping up and down
@@ -740,8 +739,7 @@ Flickable {
                 attachment["name"] = filePath.split('/').reverse()[0]
                 attachment["filePath"] = filePath
 
-                // we need to append the attachment to a ListModel, so create it dynamically
-                //var attachments = Qt.createQmlObject("import QtQuick 2.0; ListModel { }", composeBar)
+                // Send it as normal attachment
                 attachments.append(attachment)
                 composeBar.sendRequested("", attachmentsToModel())
                 stickersPicker.expanded = false

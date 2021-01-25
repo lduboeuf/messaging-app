@@ -31,7 +31,6 @@ FocusScope {
 
     property bool expanded: false
     readonly property int packCount: stickerPacksModel.count
-    property string currentStickerPackPath: ""
 
     height: units.gu(30)
 
@@ -49,39 +48,24 @@ FocusScope {
         return path.replace('file://', '')
     }
 
-    function removeSticker(path) {
-        var filePath = toSystemPath(path)
-        FileOperations.remove(filePath)
-        StickersHistoryModel.remove(filePath)
-    }
-
     function importStickerRequested(packName) {
-        //currentStickerPackPath = "%1/%2".arg(stickerPacksModel.packPath).arg(packName)
         contentImporter.requestPicture()
         contentImporter.contentReceived.connect(function(contentUrl) {
             stickerPacksModel.addSticker(packName, toSystemPath(String(contentUrl)))
         })
     }
 
-    function importSticker(contentUrl) {
-        var attachment = {}
-        var filePath = toSystemPath(String(contentUrl))
-        var fileName = filePath.split('/').reverse()[0]
-        var destFile =  "%1/%2".arg(toSystemPath(currentStickerPackPath)).arg(fileName)
-        FileOperations.copyFile(filePath, destFile);
-    }
-
-
     StickersPackModel {
         id: stickerPacksModel
         stickerPath: dataLocation + "/stickers"
 
         onCountChanged: console.log('sps count', count);
-    }
+        onCreatedPackChanged: {
 
-//    StickerPacksModel {
-//        id: stickerPacksModel
-//    }
+            stickersModel.packName = packName
+            setsList.positionViewAtEnd()
+        }
+    }
 
 
     StickersModel {
@@ -90,21 +74,11 @@ FocusScope {
             console.log('sp count:', count)
         }
         onPackNameChanged: console.log('selected pack:', packName)
-        onDataChanged: console.log(JSON.stringify(data))
     }
 
     Rectangle {
         anchors.fill: parent
         color: theme.palette.normal.foreground
-    }
-
-
-    Behavior on height {
-        UbuntuNumberAnimation { }
-    }
-
-    Behavior on opacity {
-        UbuntuNumberAnimation { }
     }
 
     ContentImport {
@@ -176,14 +150,39 @@ FocusScope {
         }
     }
 
+    AbstractButton {
+        id: addStickerPackBtn
+        height: units.gu(6)
+        width: height
+
+        anchors.right: parent.right
+        anchors.top: parent.top
+
+        Image {
+            id: image
+            anchors.fill: parent
+            anchors.margins: units.gu(1)
+            sourceSize.height: parent.height
+            sourceSize.width: parent.width
+            smooth: true
+            source: "image://theme/add"
+        }
+
+        onTriggered: stickerPacksModel.createPack()
+
+
+    }
+
+
     ListView {
         id: setsList
         model: stickerPacksModel
         orientation: ListView.Horizontal
         anchors.left: parent.left
-        anchors.right: parent.right
+        anchors.right: addStickerPackBtn.left
         anchors.top: parent.top
         height: units.gu(6)
+        clip: true
 
         header: HistoryButton {
             height: units.gu(6)
@@ -196,13 +195,22 @@ FocusScope {
             height: units.gu(6)
             width: height
 
+
             onClicked: {
                 setsList.currentIndex = index
                 stickersModel.packName = packName
             }
             selected: stickersModel.packName === packName
         }
+
+        add: Transition {
+            NumberAnimation { property: "opacity"; from: 0; to: 1.0; duration: 400 }
+        }
+
     }
+
+
+
 
     GridView {
         id: stickersGrid
@@ -230,18 +238,24 @@ FocusScope {
             onPressAndHold: {
                 var dialog = PopupUtils.open(stickerPopover, sticker_delegate)
                 dialog.accepted.connect(function() {
-                    removeSticker(filePath)
+                    stickerPacksModel.removeSticker(stickersModel.packName, toSystemPath(filePath))
                 })
             }
 
         }
+
+        populate: Transition {
+            NumberAnimation { properties: "opacity"; from: 0; to: 1; duration:200 }
+        }
+
+
 
     }
 
     Label {
         id: no_stickers_lbl
         anchors.centerIn: stickersGrid
-        visible: stickersGrid.model.packName.length > 0 && stickersGrid.model.count === 0
+        visible: false
         text: i18n.tr("no stickers yet")
     }
 
@@ -308,7 +322,7 @@ FocusScope {
             stickerSource: "image://theme/edit-delete"
             height: units.gu(6)
             width: height
-            visible: (stickersModel.packName.length > 0 && stickersModel.count > 0) || (StickersHistoryModel.count > 0 && stickersModel.packName.length === 0)
+            visible: (stickersModel.packName.length > 0 ) || (StickersHistoryModel.count > 0 && stickersModel.packName.length === 0)
 
             onTriggered: {
                 if (stickersModel.packName.length > 0) {
@@ -340,36 +354,13 @@ FocusScope {
                 anchors.right: undefined
                 anchors.horizontalCenter: stickersGrid.horizontalCenter
             }
+
+            PropertyChanges {
+                target: no_stickers_lbl
+                visible: true
+            }
         }
     ]
 
-
-
-//    ListView {
-//        id: stickerPackView
-//        orientation: ListView.Horizontal
-//        anchors.left: parent.left
-//        //anchors.right: parent.right
-//        anchors.bottom: parent.bottom
-
-//        height: units.gu(30)
-//        model:testouille
-//        delegate: StickerPackDelegate {
-//            height: units.gu(6)
-//            width: height
-
-//            onClicked: {
-//                stickerPackView.currentIndex = index
-//                stickersModel.packName = packName
-//            }
-//            selected: stickersModel.packName === packName
-
-//            Component.onCompleted: {
-//                console.log(thumbnail, count, "name:", packName)
-//            }
-
-//        }
-
-//    }
 
 }

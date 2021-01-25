@@ -96,26 +96,6 @@ Item {
         rowSpacing: units.gu(3)
 
         TransparentButton {
-            id: stickersButton
-            objectName: "stickersButton"
-            iconSource: Qt.resolvedUrl("./assets/face-smile-big-symbolic-2.svg")
-            iconSize: grid.iconSize
-            Layout.alignment: Qt.AlignHCenter
-            spacing: grid.buttonSpacing
-            text: i18n.tr("Stickers")
-            onClicked: {
-                if (!stickersPicker.expanded) {
-                    messageTextArea.focus = false
-                    stickersPicker.expanded = true
-                    attachmentPanel.expanded = false
-                } else {
-                    stickersPicker.expanded = false
-                    messageTextArea.forceActiveFocus()
-                }
-            }
-        }
-
-        TransparentButton {
             id: pictureButton
             objectName: "pictureButton"
             iconName: "stock_image"

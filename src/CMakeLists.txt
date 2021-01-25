@@ -5,7 +5,7 @@ set(messaging_app_HDRS
     fileoperations.h
     messagingapplication.h
     stickers-history-model.h
-    stickerspackmodel.h
+    stickers-pack-model.h
     )
 
 set(messaging_app_SRCS
@@ -14,7 +14,7 @@ set(messaging_app_SRCS
     messagingapplication.cpp
     main.cpp
     stickers-history-model.cpp
-    stickerspackmodel.cpp
+    stickers-pack-model.cpp
     )
 
 add_executable(${MESSAGING_APP}

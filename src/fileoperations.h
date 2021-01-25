@@ -36,10 +36,6 @@ public:
     Q_INVOKABLE bool link(const QString &from, const QString &to);
     Q_INVOKABLE bool remove(const QString &fileName);
     Q_INVOKABLE qint64 size(const QString &filePath);
-    Q_INVOKABLE bool create(const QString &dirPath);
-    Q_INVOKABLE bool removeDir(const QString &dirPath);
-    Q_INVOKABLE bool copyFile(const QString &from, const QString &to);
-    Q_INVOKABLE QVariantMap dirStat(const QString &dirPath);
 };
 
 #endif // FILEOPERATIONS_H

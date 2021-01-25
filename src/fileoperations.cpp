@@ -25,8 +25,6 @@
 #include <QFile>
 #include <QTemporaryFile>
 #include <QStandardPaths>
-#include <QDirIterator>
-#include <QDebug>
 
 FileOperations::FileOperations(QObject *parent)
     : QObject(parent)
@@ -63,51 +61,3 @@ qint64 FileOperations::size(const QString &filePath)
 {
     return QFile(filePath).size();
 }
-
-bool FileOperations::create(const QString &dirPath)
-{
-
-    QDir newDir(dirPath);
-    if (!newDir.exists()) {
-        return newDir.mkpath(dirPath);
-    }
-    return false;
-}
-
-bool FileOperations::removeDir(const QString &dirPath)
-{
-
-    QDir dir(dirPath);
-    if (dir.exists()) {
-        return dir.removeRecursively();
-    }
-    return false;
-}
-
-
-bool FileOperations::copyFile(const QString &from, const QString &to) {
-    if(QFile::exists(to)) QFile::remove(to);
-    return QFile::copy(from, to);
-}
-
-QVariantMap FileOperations::dirStat(const QString &dirPath) {
-
-    QDirIterator it(dirPath, QStringList() << "*.png" <<  "*.gif" << "*.webp" << "*.jpg", QDir::Files | QDir::NoDotAndDotDot);
-    int count = 0;
-    QString thumbnail;
-    while (it.hasNext()) {
-        it.next();
-        if (count == 0) {
-            thumbnail = it.filePath();
-        }
-        count++;
-    }
-
-    QVariantMap map;
-    map.insert("count", count);
-    map.insert("thumbnail", thumbnail);
-
-    return map;
-
-}
-

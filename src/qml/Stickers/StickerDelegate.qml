@@ -38,5 +38,10 @@ AbstractButton {
         fillMode: Image.PreserveAspectFit
         smooth: true
         onStatusChanged: if (image.status == Image.Error) root.notFound()
+        scale: root.pressed ? 1.5 : 1
+        Behavior on scale {
+            UbuntuNumberAnimation {}
+        }
     }
+
 }

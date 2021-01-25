@@ -297,8 +297,10 @@ FocusScope {
 
     Label {
         anchors.centerIn: historyGrid
-        visible: StickersHistoryModel.count === 0 && stickersGrid.model.packName.length === 0
         text: i18n.tr("sent stickers will appear here")
+        Component.onCompleted:  {
+            visible = Qt.binding(function() { return StickersHistoryModel.count === 0 && stickersModel.packName.length === 0})
+        }
     }
 
     Row {

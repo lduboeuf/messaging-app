@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-01-25 14:14+0100\n"
+"POT-Creation-Date: 2021-01-25 13:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -892,6 +892,6 @@ msgstr ""
 msgid "no stickers yet"
 msgstr ""
 
-#: ../src/qml/Stickers/StickersPicker.qml:301
+#: ../src/qml/Stickers/StickersPicker.qml:300
 msgid "sent stickers will appear here"
 msgstr ""

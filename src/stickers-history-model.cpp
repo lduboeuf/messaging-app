@@ -96,7 +96,6 @@ void StickersHistoryModel::populateFromDatabase()
         endInsertRows();
         ++count;
     }
-    Q_EMIT rowCountChanged();
 }
 
 QHash<int, QByteArray> StickersHistoryModel::roleNames() const

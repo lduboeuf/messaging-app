@@ -60,8 +60,8 @@ public:
 Q_SIGNALS:
     void stickerPathChanged() const;
     void rowCountChanged();
-    void createdPackChanged(const QString packName);
-
+    void packCreated(const QString packName);
+    void packRemoved(const QString packName);
 
 
 private:

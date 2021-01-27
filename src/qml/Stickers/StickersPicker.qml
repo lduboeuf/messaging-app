@@ -27,12 +27,13 @@ import ".." //ContentImport
 FocusScope {
     id: pickerRoot
 
-    signal stickerSelected(string path)
-
     property bool expanded: false
     readonly property int packCount: stickerPacksModel.count
 
     height: units.gu(30)
+
+    signal stickerSelected(string path)
+
 
     Component.onCompleted: {
         StickersHistoryModel.databasePath = dataLocation + "/stickers/stickers.sqlite"
@@ -60,10 +61,21 @@ FocusScope {
         stickerPath: dataLocation + "/stickers"
 
         onCountChanged: console.log('sps count', count);
-        onCreatedPackChanged: {
-
+        onPackCreated: {
             stickersModel.packName = packName
             setsList.positionViewAtEnd()
+            setsList.currentIndex = setsList.count - 1
+        }
+        onPackRemoved: {
+            var currentIndex = setsList.currentIndex
+            console.log('currentIndex', currentIndex)
+            if (currentIndex > 0 ) {
+                currentIndex--
+                setsList.currentIndex = currentIndex
+                stickersModel.packName = stickerPacksModel.get(currentIndex).packName
+            } else {
+                stickersModel.packName = ""
+            }
         }
     }
 
@@ -124,8 +136,8 @@ FocusScope {
         Dialog {
             id: dialog
 
-            title: i18n.tr("Stickers")
-            text: i18n.tr("Please confirm that you want to delete all stickers in this pack")
+            title:  i18n.tr("Stickers")
+            text: stickersModel.packName.length > 0 ? i18n.tr("Please confirm that you want to delete all stickers in this pack") : i18n.tr("Please confirm that you want to delete all stickers in the history")
 
             signal accepted()
 
@@ -248,8 +260,6 @@ FocusScope {
             NumberAnimation { properties: "opacity"; from: 0; to: 1; duration:200 }
         }
 
-
-
     }
 
     Label {
@@ -327,15 +337,14 @@ FocusScope {
             visible: (stickersModel.packName.length > 0 ) || (StickersHistoryModel.count > 0 && stickersModel.packName.length === 0)
 
             onTriggered: {
-                if (stickersModel.packName.length > 0) {
-                    var dialog = PopupUtils.open(confirmDeleteComponent, null)
-                    dialog.accepted.connect(function() {
+                var dialog = PopupUtils.open(confirmDeleteComponent, null)
+                dialog.accepted.connect(function() {
+                    if (stickersModel.packName.length > 0) {
                         stickerPacksModel.removePack(stickersModel.packName)
-                        stickersModel.packName = ""
-                    })
-                } else {
-                    StickersHistoryModel.clearAll()
-                }
+                    } else {
+                        StickersHistoryModel.clearAll()
+                    }
+                })
 
             }
         }

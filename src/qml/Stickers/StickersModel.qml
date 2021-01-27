@@ -20,7 +20,7 @@ import QtQuick 2.3
 import Qt.labs.folderlistmodel 2.2
 
 FolderListModel {
-    property string packName
+    property string packName: ""
     folder: packName.length > 0 ? "%1/stickers/%2".arg(dataLocation).arg(packName) : ""
     showDirs: false
     caseSensitive: false

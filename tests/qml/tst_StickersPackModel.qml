@@ -92,6 +92,7 @@ Item {
 
 
         function test_createPack() {
+            stickerPackCreatedSpy.clear()
             model.createPack();
             countSpy.wait()
             compare(model.count, 2)

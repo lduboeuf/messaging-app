@@ -49,6 +49,18 @@ Item {
        signalName: "stickerPathChanged"
     }
 
+    SignalSpy {
+        id: stickerPackCreatedSpy
+        target: model
+        signalName: "packCreated"
+    }
+
+    SignalSpy {
+        id: stickerPackRemovedSpy
+        target: model
+        signalName: "packRemoved"
+    }
+
 
 
     UbuntuTestCase {
@@ -68,6 +80,8 @@ Item {
             countSpy.clear()
             stickerPackChangedSpy.clear()
             stickerPathChangedSpy.clear()
+            stickerPackCreatedSpy.clear()
+            stickerPackRemovedSpy.clear()
         }
 
         function test_modelIsEmpty() {
@@ -78,9 +92,11 @@ Item {
 
 
         function test_createPack() {
+            stickerPackCreatedSpy.clear()
             model.createPack();
             countSpy.wait()
             compare(model.count, 2)
+            compare(stickerPackCreatedSpy.count, 1)
         }
 
         function test_removePack() {
@@ -88,6 +104,7 @@ Item {
             model.removePack(stickerPack.packName)
             countSpy.wait()
             compare(model.count, 0)
+            compare(stickerPackRemovedSpy.count, 1)
         }
 
 

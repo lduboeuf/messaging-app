@@ -48,7 +48,6 @@ void StickerPack::setThumbnail(QString thumbnail)
 
 StickersPackModel::StickersPackModel(QObject *parent) : QAbstractListModel(parent)
 {
-
 }
 
 const QString StickersPackModel::stickerPath() const
@@ -90,7 +89,7 @@ void StickersPackModel::createPack()
     m_stickerPacks.append(sp);
     endInsertRows();
     Q_EMIT rowCountChanged();
-    Q_EMIT createdPackChanged(sp.name());
+    Q_EMIT packCreated(sp.name());
 }
 
 
@@ -126,6 +125,7 @@ void StickersPackModel::removePack(const QString& packName)
 
         endRemoveRows();
         Q_EMIT rowCountChanged();
+        Q_EMIT packRemoved(packName);
 
     }
 
@@ -221,9 +221,8 @@ void StickersPackModel::populate()
         qDebug() << "no empty packs -> create one";
         StickerPack newSp = generatePack();
         m_stickerPacks.append(newSp);
-        Q_EMIT createdPackChanged(newSp.name());
+        Q_EMIT packCreated(newSp.name());
     }
-
     endResetModel();
 
     Q_EMIT rowCountChanged();

@@ -19,7 +19,6 @@
 import QtQuick 2.9
 import Ubuntu.Components 1.3
 import Ubuntu.Components.Popups 1.3
-import Qt.labs.folderlistmodel 2.12
 import messagingapp.private 0.1
 
 import ".." //ContentImport

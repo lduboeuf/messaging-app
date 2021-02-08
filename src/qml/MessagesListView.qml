@@ -90,7 +90,7 @@ MultipleSelectionListView {
 
         Component.onCompleted: {
             var sourceFile = ""
-            var isIncomingMmsError = model.senderId !== "self" && model.textMessageType === HistoryThreadModel.MessageTypeMultiPart && model.textMessageAttachments.length === 0 && (model.textMessage.length === 0 || model.textMessageStatus === HistoryThreadModel.MessageStatusTemporarilyFailed || model.textMessageStatus === HistoryThreadModel.MessageStatusPermanentlyFailed || model.textMessageStatus === HistoryThreadModel.MessageStatusPending)
+            var isIncomingMmsError = model.textMessageType === HistoryThreadModel.MessageTypeMultiPart && model.textMessageAttachments.length === 0 && (model.textMessage.length === 0 || model.textMessageStatus === HistoryThreadModel.MessageStatusTemporarilyFailed || model.textMessageStatus === HistoryThreadModel.MessageStatusPermanentlyFailed || model.textMessageStatus === HistoryThreadModel.MessageStatusPending)
             if (isIncomingMmsError) {
                 sourceFile = "MessageAlertBubble.qml"
             } else if (textMessageType == HistoryThreadModel.MessageTypeInformation) {

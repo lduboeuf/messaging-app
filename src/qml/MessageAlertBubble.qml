@@ -97,8 +97,6 @@ ListItemWithActions{
         color: Theme.palette.normal.backgroundText
         elide: Text.ElideRight
         text: Qt.formatTime(messageData.timestamp, Qt.DefaultLocaleShortDate)
-
-
     }
 
     Button {
@@ -147,6 +145,10 @@ ListItemWithActions{
         iconName: "delete"
         text: i18n.tr("Delete")
         onTriggered: eventModel.removeEvents([messageData.properties]);
+    }
+
+    Component.onCompleted: {
+        console.log('textMessage:', textMessage)
     }
 
 }

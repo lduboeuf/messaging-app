@@ -120,7 +120,14 @@ ListItemWithActions{
             // in the onPendingChanged connection the redownloadButton.enabled is reset to default,
             // we can set the button disabled here for better responsiveness.
             redownloadButton.enabled = false
+            indicator.running = true
             chatManager.redownloadMessage(messageData.accountId, messageData.threadId, messageData.eventId)
+        }
+        
+        ActivityIndicator {
+            id: indicator
+            anchors.centerIn: parent
+            running: false
         }
 
         // Just for button responsiveness.
@@ -129,6 +136,7 @@ ListItemWithActions{
             onPendingChanged: {
                 // Set redownload button enabled property to default, cause it might be changed by the button's onClicked method.
                 redownloadButton.enabled = temporaryError
+                indicator.running = false
             }
         }
     }

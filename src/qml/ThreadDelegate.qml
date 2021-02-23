@@ -34,7 +34,7 @@ ListItemWithActions {
     property QtObject chatEntry: null
     property bool compactView: false
     property bool isIncomingMmsError: eventSenderId !== "self" && eventTextMessageType === HistoryEventModel.MessageTypeMultiPart && displayedEventTextAttachments.length === 0 && (eventTextMessage.length === 0 || eventTextMessageStatus === HistoryEventModel.MessageStatusTemporarilyFailed || eventTextMessageStatus === HistoryEventModel.MessageStatusPermanentlyFailed || eventTextMessageStatus === HistoryEventModel.MessageStatusPending)
-    property string defaultMMSErrorMessage: i18n.tr("Oops, there has been an error with the MMS system and this message could not be retrieved. Please ensure Cellular Data is ON and MMS settings are correct, then ask the sender to try again.")
+    property string defaultMMSErrorMessage: i18n.tr("New MMS message received")
     property var participant: participants ? participants[0] : {}
     property bool groupChat: chatType == HistoryThreadModel.ChatTypeRoom || participants.length > 1
     property string searchTerm

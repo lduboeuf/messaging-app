@@ -70,7 +70,6 @@ Column {
                 textAttachments.push(attachment)
             } else if (startsWith(attachment.contentType, "audio/")) {
                 attachmentsView.dataAttachments.push({"type": "audio",
-                                      "minHeight": units.gu(5),
                                       "data": attachment,
                                       "delegateSource": "AttachmentDelegates/AudioDelegate.qml",
                                     })
@@ -83,7 +82,6 @@ Column {
                 }
 
                 attachmentsView.dataAttachments.push({"type": "image",
-                                      "minHeight": units.gu(14),
                                       "data": attachment,
                                       "delegateSource": imgDelegate,
                                     })
@@ -93,19 +91,16 @@ Column {
             } else if (startsWith(attachment.contentType, "text/vcard") ||
                        startsWith(attachment.contentType, "text/x-vcard")) {
                 attachmentsView.dataAttachments.push({"type": "vcard",
-                                      "minHeight": units.gu(9.5),
                                       "data": attachment,
                                       "delegateSource": "AttachmentDelegates/ContactDelegate.qml"
                                     })
             } else if (startsWith(attachment.contentType, "video/")) {
                 attachmentsView.dataAttachments.push({"type": "video",
-                                      "minHeight": units.gu(14),
                                       "data": attachment,
                                       "delegateSource": "AttachmentDelegates/VideoDelegate.qml",
                                     })
             } else {
                 attachmentsView.dataAttachments.push({"type": "default",
-                                      "minHeight": units.gu(15),
                                       "data": attachment,
                                       "delegateSource": "AttachmentDelegates/DefaultDelegate.qml"
                                     })
@@ -117,6 +112,26 @@ Column {
         }
     }
 
+    function getMinHeight(attachmentType) {
+        var minHeight = units.gu(5)
+        switch (attachmentType) {
+        case 'audio':
+            minHeight = units.gu(5)
+            break
+        case 'image':
+        case 'video':
+            minHeight = units.gu(14)
+            break
+        case 'vcard':
+            minHeight = units.gu(9.5)
+            break
+        default:
+            minHeight = units.gu(15)
+        }
+
+        return minHeight
+    }
+
     spacing: units.gu(1)
     Repeater {
         id: attachmentsRepeater
@@ -124,7 +139,7 @@ Column {
         Loader {
             id: attachmentLoader
             property bool loaded: status === Loader.Ready
-            height: loaded ? item.height : modelData.minHeight
+            height: loaded ? item.height : getMinHeight(modelData.type)
             width: units.gu(27)
 
             states: [

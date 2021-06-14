@@ -1052,7 +1052,7 @@ Page {
             messages.ready()
         }
         markThreadAsRead()
-        if (active && !newMessage)
+        if (active && (!newMessage || (newMessage && participantIds.length > 0 )))
             composeBar.forceFocus()
     }
 
@@ -1761,7 +1761,7 @@ Page {
     }
 
     onActiveFocusChanged: {
-        if (activeFocus && !newMessage) {
+        if (activeFocus && (!newMessage || (newMessage && participantIds.length > 0 ))) {
             focusTimer.start()
         }
     }

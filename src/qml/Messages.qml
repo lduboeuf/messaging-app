@@ -1752,9 +1752,18 @@ Page {
         when: messages.active
     }
 
+    Timer {
+        id: focusTimer
+        interval: 100
+        repeat: false
+        running: false
+        onTriggered: composeBar.forceFocus()
+    }
+
     onActiveFocusChanged: {
         if (activeFocus && !newMessage) {
-            composeBar.textArea.forceActiveFocus()
+            focusTimer.start()
         }
     }
+
 }

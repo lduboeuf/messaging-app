@@ -1052,7 +1052,7 @@ Page {
             messages.ready()
         }
         markThreadAsRead()
-        if (active && !newMessage)
+        if (active && (!newMessage || (newMessage && participantIds.length > 0 )))
             composeBar.forceFocus()
     }
 
@@ -1752,9 +1752,18 @@ Page {
         when: messages.active
     }
 
+    Timer {
+        id: focusTimer
+        interval: 100
+        repeat: false
+        running: false
+        onTriggered: composeBar.forceFocus()
+    }
+
     onActiveFocusChanged: {
-        if (activeFocus && !newMessage) {
-            composeBar.textArea.forceActiveFocus()
+        if (activeFocus && (!newMessage || (newMessage && participantIds.length > 0 ))) {
+            focusTimer.start()
         }
     }
+
 }

@@ -209,6 +209,7 @@ ListItemWithActions {
     Loader {
         id: attachmentsLoader
 
+        opacity: 0.0
         source: Qt.resolvedUrl("AttachmentsDelegate.qml")
         active: attachments.length > 0
 
@@ -243,6 +244,10 @@ ListItemWithActions {
             when: loaded
         }
 
+        NumberAnimation on opacity {
+            id: fadeIn
+            to: 1.0
+        }
     }
 
     MessageBubble {
@@ -305,7 +310,7 @@ ListItemWithActions {
 
     Loader {
         id: statusIconLoader
-        active: !incoming && !selectMode
+        active: !messageDelegate.incoming && !messageDelegate.selectMode
         Component.onCompleted: setSource(Qt.resolvedUrl("MessageStatusIcon.qml"),
                                          {"parent": Qt.binding(function(){ return messageDelegate._lastItem }),
                                           "incoming": Qt.binding(function(){ return messageDelegate.incoming }),

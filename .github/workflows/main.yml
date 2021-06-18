@@ -50,6 +50,6 @@ jobs:
         run: ~/.local/bin/clickable build --verbose ${BUILD_TYPE} --arch ${ARCH} --config clickable.json
       - uses: actions/upload-artifact@v2
         with:
-          name: "ubports-${{ matrix.arch }}--click"
+          name: "messaging-app-${{ matrix.arch }}-testing-click"
           path: build/**/app/*.click
           if-no-files-found: ignore

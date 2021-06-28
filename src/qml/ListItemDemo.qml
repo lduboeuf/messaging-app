@@ -155,6 +155,10 @@ Rectangle {
         loops: Animation.Infinite
         running: root.enabled
 
+        PauseAnimation {
+            duration: UbuntuAnimation.SleepyDuration
+        }
+
         PropertyAction {
             target: dragMessage
             property: "text"

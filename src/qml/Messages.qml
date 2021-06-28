@@ -1732,7 +1732,7 @@ Page {
 
         property bool parentActive: messages.active
 
-        parent: QuickUtils.rootItem(this)
+        parent: messageList
         anchors.fill: parent
         onStatusChanged: {
             if (status === Loader.Ready) {

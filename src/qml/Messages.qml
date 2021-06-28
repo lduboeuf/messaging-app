@@ -1053,8 +1053,10 @@ Page {
         }
         markThreadAsRead()
 
-        if (active && (!newMessage || (newMessage && participantIds.length > 0 )))
-            composeBar.forceFocus()
+        if (active && (!newMessage || (newMessage && participantIds.length > 0 ))) {
+            focusTimer.start()
+        }
+
     }
 
     // These fake items are used to track if there are instances loaded
@@ -1755,7 +1757,7 @@ Page {
 
     Timer {
         id: focusTimer
-        interval: 100
+        interval: 200
         repeat: false
         running: false
         onTriggered: composeBar.forceFocus()
